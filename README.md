@@ -36,19 +36,9 @@ We provide code for open-ended evaluation in `evaluation/open_ended`, covering M
 Please cite our paper if you find the repository helpful.
 
 ```
-@article{ye2024fedllm,
-  title={FedLLM-Bench: Realistic Benchmarks for Federated Learning of Large Language Models},
-  author={Ye, Rui and Ge, Rui and Zhu, Xinyu and Chai, Jingyi and Du, Yaxin and Liu, Yang and Wang, Yanfeng and Chen, Siheng},
-  journal={arXiv preprint arXiv:2406.04845},
-  year={2024}
-}
+
 ```
 and
 ```
-@article{ye2024openfedllm,
-  title={OpenFedLLM: Training Large Language Models on Decentralized Private Data via Federated Learning},
-  author={Ye, Rui and Wang, Wenhao and Chai, Jingyi and Li, Dihan and Li, Zexi and Xu, Yinda and Du, Yaxin and Wang, Yanfeng and Chen, Siheng},
-  journal={arXiv preprint arXiv:2402.06954},
-  year={2024}
-}
+
 ```

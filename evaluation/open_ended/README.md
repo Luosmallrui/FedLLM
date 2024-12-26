@@ -44,25 +44,11 @@ For AdvBench, the results will be directly output after generating answers.
 
 For MT-Bench and Vicuna Benchmark:
 ```
-@misc{zheng2023judging,
-      title={Judging LLM-as-a-judge with MT-Bench and Chatbot Arena},
-      author={Lianmin Zheng and Wei-Lin Chiang and Ying Sheng and Siyuan Zhuang and Zhanghao Wu and Yonghao Zhuang and Zi Lin and Zhuohan Li and Dacheng Li and Eric. P Xing and Hao Zhang and Joseph E. Gonzalez and Ion Stoica},
-      year={2023},
-      eprint={2306.05685},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
-}
+
 ```
 
 For Advbench:
 ```
-@misc{zou2023universal,
-      title={Universal and Transferable Adversarial Attacks on Aligned Language Models}, 
-      author={Andy Zou and Zifan Wang and J. Zico Kolter and Matt Fredrikson},
-      year={2023},
-      eprint={2307.15043},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
-}
+
 ```
 
