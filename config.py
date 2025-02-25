@@ -77,6 +77,17 @@ class ScriptArguments:
     dp_epsilon: Optional[float] = field(default=1.0, metadata={"help": "the delta for differential privacy"})
     dp_sigma: Optional[float] = field(default=None, metadata={
         "help": "the manually set sigma for differential privacy, this will replace the sigma calculated by epsilon and delta"})
+    # 新增配置选项: 动态适配器和质量加权聚合
+    dynamic_peft: Optional[bool] = field(default=False, metadata={
+        "help": "Enable dynamic PEFT configuration based on client data characteristics"})
+    quality_weighted_aggregation: Optional[bool] = field(default=False, metadata={
+        "help": "Enable quality-weighted aggregation"})
+    min_peft_rank: Optional[int] = field(default=2, metadata={
+        "help": "Minimum LoRA rank for dynamic PEFT configuration"})
+    max_peft_rank: Optional[int] = field(default=16, metadata={
+        "help": "Maximum LoRA rank for dynamic PEFT configuration"})
+    data_quality_weight: Optional[float] = field(default=0.5, metadata={
+        "help": "Weight of data quality in aggregation (0-1, 0 means only quantity matters)"})
 
 
 parser = HfArgumentParser((ScriptArguments, FedArguments))
@@ -139,15 +150,25 @@ def get_model_config(script_args):
 
 def save_config(script_args, fed_args):
     now_time = (datetime.now()).strftime("%Y%m%d%H%M%S")
-    dataset_name_split = os.path.basename(script_args.dataset_name)
-    output_dir = f"{script_args.output_dir}/{dataset_name_split}_{script_args.dataset_sample}_{fed_args.fed_alg}_c{fed_args.num_clients}s{fed_args.sample_clients}_i{script_args.max_steps}_b{script_args.batch_size}a{script_args.gradient_accumulation_steps}_l{script_args.seq_length}_r{script_args.peft_lora_r}a{script_args.peft_lora_alpha}_{now_time}"
+    dataset_name_split = os.path.basename(script_args.dataset_name) if script_args.dataset_name else "local_data"
+
+    # 在输出目录中包含动态PEFT和质量加权信息
+    dynamic_peft_str = "dynPEFT" if script_args.dynamic_peft else ""
+    quality_weighted_str = "qWeight" if script_args.quality_weighted_aggregation else ""
+
+    output_dir = f"{script_args.output_dir}/{dataset_name_split}_{script_args.dataset_sample}_{fed_args.fed_alg}_c{fed_args.num_clients}s{fed_args.sample_clients}_i{script_args.max_steps}_b{script_args.batch_size}a{script_args.gradient_accumulation_steps}_l{script_args.seq_length}_r{script_args.peft_lora_r}a{script_args.peft_lora_alpha}_{dynamic_peft_str}_{quality_weighted_str}_{now_time}"
+
+    # 清理目录名中的多余下划线
+    output_dir = output_dir.replace("__", "_").rstrip("_")
+
     while True:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
             break
         else:
             now_time = (datetime.now() + timedelta(seconds=1)).strftime("%Y%m%d%H%M%S")
-            output_dir = f"{script_args.output_dir}/{dataset_name_split}_{fed_args.fed_alg}_c{fed_args.num_clients}s{fed_args.sample_clients}_i{script_args.max_steps}_b{script_args.batch_size}a{script_args.gradient_accumulation_steps}_l{script_args.seq_length}_{now_time}"
+            output_dir = f"{script_args.output_dir}/{dataset_name_split}_{fed_args.fed_alg}_c{fed_args.num_clients}s{fed_args.sample_clients}_i{script_args.max_steps}_b{script_args.batch_size}a{script_args.gradient_accumulation_steps}_l{script_args.seq_length}_{dynamic_peft_str}_{quality_weighted_str}_{now_time}"
+            output_dir = output_dir.replace("__", "_").rstrip("_")
 
     script_args.output_dir = output_dir
     with open(os.path.join(script_args.output_dir, "args.json"), "w") as f:
