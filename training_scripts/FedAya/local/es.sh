@@ -1,6 +1,6 @@
 max_steps=10
-num_rounds=40
-checkpoint_step=40
+num_rounds=25
+checkpoint_step=25
 batch_size=4
 gradient_accumulation_steps=4
 seq_length=1024
@@ -9,11 +9,10 @@ sample_clients=1
 lora_r=16
 lora_alpha=32   # twice of lora_r
 lr=2e-5
-
-local_data_dir=data/Fed-Aya/local/local_es.json   # you may uncomment this line if your data is stored locally and include it in the python command
-dataset_name=FedAya_Local_es
-dataset_sample=666
-model_name_or_path=""
+local_data_dir=/root/autodl-tmp/FedLLM-Bench-Data/Fed-Aya/local/local_en.json   # you may uncomment this line if your data is stored locally and include it in the python command
+dataset_name=FedAya_Local_en
+dataset_sample=430
+model_name_or_path="/root/autodl-tmp/deepseek-r1-qwen-1.5b/"
 output_dir=./models/FedAya/local
 
 gpu=0
