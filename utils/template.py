@@ -81,11 +81,20 @@ TEMPLATE_DICT = {
 
 def get_formatting_prompts_func(template_name, eos_token,script_args):
     overall_temp, response_temp = TEMPLATE_DICT[template_name]
-    def formatting_prompts_func(example):    
-        output_texts = []    
-        for i in range(len(example['instruction'])):    
-            text = overall_temp.format(example['instruction'][i], example['response'][i], eos_token)    
-            output_texts.append(text)    
-        return output_texts    
+
+    def formatting_prompts_func(example):
+        # 检查示例是单个样本还是批量样本
+        if isinstance(example['instruction'], str) and isinstance(example['response'], str):
+            # 单个样本
+            text = overall_temp.format(example['instruction'], example['response'], eos_token)
+            return text  # 或 [text] 如果需要返回列表
+        else:
+            # 批量样本 (列表形式)
+            result = []
+            for i in range(len(example['instruction'])):
+                if i < len(example['response']):  # 安全检查
+                    text = overall_temp.format(example['instruction'][i], example['response'][i], eos_token)
+                    result.append(text)
+            return result
     
     return formatting_prompts_func, response_temp
